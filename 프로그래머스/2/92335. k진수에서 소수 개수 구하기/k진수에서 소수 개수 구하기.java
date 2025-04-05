@@ -8,13 +8,7 @@ class Solution {
         List<Long> list = new ArrayList<>();
         for(long i : primes){
             String s = String.valueOf(i);
-            boolean isContain0 = false;
-            for(char c : s.toCharArray()){
-                if(c=='0'){
-                    isContain0 = true;
-                }
-            }
-            if(!isContain0){
+            if(!s.contains("0")){
                 list.add(i);
             }
         }
