@@ -9,7 +9,6 @@ class Solution {
         map.put(1, new int[]{0, 2, 3});
         map.put(2, new int[]{0, 1, 3});
         map.put(3, new int[]{0, 1, 2});
-        int[][] dp = new int[land.length][land[0].length];
         for(int i = 1; i<land.length; i++){
             for(int j = 0; j<4; j++){
                 int[] arr = map.get(j);
