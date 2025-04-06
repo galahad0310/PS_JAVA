@@ -8,9 +8,9 @@ class Solution {
             }
             
             if(Character.isUpperCase(c)){
-                sb.append((char)((c-'A'+n) % 26 + 'A'));    
+                sb.append((char)((c-'A'+n) % 26 + 'A'));
             }else{
-                sb.append((char)((c-'a'+n) % 26 + 'a'));
+                sb.append((char)((c-'a' + n) % 26 + 'a'));
             }
         }
         return sb.toString();
