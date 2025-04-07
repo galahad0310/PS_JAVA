@@ -1,6 +1,5 @@
 import java.util.*;
 class Solution {
-    boolean[] visited = new boolean[3000001];
     class Node{
         int x, cnt;
         Node(int x, int cnt){
@@ -9,6 +8,7 @@ class Solution {
         }
     }
     public int solution(int x, int y, int n) {
+        boolean[] visited = new boolean[y+1];
         Queue<Node> q = new LinkedList<>();
         q.add(new Node(x, 0));
         visited[x] = true;
