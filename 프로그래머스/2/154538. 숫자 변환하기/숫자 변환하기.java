@@ -2,10 +2,10 @@ import java.util.*;
 class Solution {
     boolean[] visited = new boolean[3000001];
     class Node{
-        int x, time;
-        Node(int x, int time){
-            this.x=x;
-            this.time=time;
+        int x, cnt;
+        Node(int x, int cnt){
+            this.x = x;
+            this.cnt = cnt;
         }
     }
     public int solution(int x, int y, int n) {
@@ -15,22 +15,13 @@ class Solution {
         while(!q.isEmpty()){
             Node curr = q.poll();
             if(curr.x == y){
-                return curr.time;
+                return curr.cnt;
             }
-            int next = curr.x*2;
-            if(!visited[next] && next <= y){
-                q.add(new Node(next, curr.time+1));
-                visited[next] = true;
-            }
-            next = curr.x*3;
-            if(!visited[next] && next <= y){
-                q.add(new Node(next, curr.time+1));
-                visited[next] = true;
-            }
-            next = curr.x+n;
-            if(!visited[next] && next <= y){
-                q.add(new Node(next, curr.time+1));
-                visited[next] = true;
+            for(int next : new int[]{curr.x * 2, curr.x*3, curr.x+n}){
+                if(next<=y && !visited[next]){
+                    q.add(new Node(next, curr.cnt+1));
+                    visited[next] = true;
+                }
             }
         }
         return -1;
