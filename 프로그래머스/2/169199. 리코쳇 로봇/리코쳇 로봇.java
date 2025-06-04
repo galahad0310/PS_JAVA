@@ -1,54 +1,49 @@
 import java.util.*;
 class Solution {
-    int[] dy = new int[]{-1, 1, 0, 0};
-    int[] dx = new int[]{0, 0, -1, 1};
-    
     public int solution(String[] board) {
-        char[][] graph = new char[board.length][board[0].length()];
-        int[] start = new int[2];
-        for(int i = 0; i<graph.length; i++){
-            for(int j = 0; j<graph[0].length; j++){
-                graph[i][j] = board[i].charAt(j);
-                if(graph[i][j] == 'R'){
-                    start[0] = i;
-                    start[1] = j;
+        char[][] g = new char[board.length][board[0].length()];
+        int[] s = new int[2];
+        for(int i = 0; i<g.length; i++){
+            for(int j = 0; j<g[0].length; j++){
+                g[i][j] = board[i].charAt(j);
+                if(g[i][j] == 'R'){
+                    s[0] = i;
+                    s[1] = j;
                 }
             }
         }
-        
+        int[] dx = new int[]{0, 0, -1, 1};
+        int[] dy = new int[]{-1, 1, 0, 0};
         Queue<int[]> q = new LinkedList<>();
-        boolean[][] visited = new boolean[graph.length][graph[0].length];
-        q.add(new int[]{start[0], start[1], 0});
-        visited[start[0]][start[1]] = true;
+        boolean[][] v = new boolean[g.length][g[0].length];
+        q.add(new int[]{s[0], s[1], 0});
+        v[s[0]][s[1]] = true;
         
         while(!q.isEmpty()){
-            int[] curr = q.poll();
+            int[] c = q.poll();
             for(int i = 0; i<4; i++){
-                int y = curr[0];
-                int x = curr[1];
-                
+                int y = c[0];
+                int x = c[1];
                 while(true){
                     int ny = y + dy[i];
                     int nx = x + dx[i];
-                    if(!isBoundary(ny, nx, graph) || graph[ny][nx] == 'D') break;
+                    
+                    if(!(ny > -1 && ny < g.length && nx > -1 && nx < g[0].length) || g[ny][nx] == 'D'){
+                        break;
+                    }
+                    
                     y = ny;
                     x = nx;
                 }
-                
-                if(graph[y][x] == 'G'){
-                    return curr[2] + 1;
+                if(g[y][x] == 'G'){
+                    return c[2] + 1;
                 }
-                
-                if(!visited[y][x]){
-                    visited[y][x] = true;
-                    q.add(new int[]{y, x, curr[2] + 1});
+                if(!v[y][x]){
+                    v[y][x] = true;
+                    q.add(new int[]{y, x, c[2] + 1});
                 }
             }
         }
         return -1;
-    }
-    
-    boolean isBoundary(int ny, int nx, char[][] graph){
-        return ny > -1 && ny < graph.length && nx > -1 && nx < graph[0].length;
     }
 }
