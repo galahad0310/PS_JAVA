@@ -1,49 +1,54 @@
 import java.util.*;
 class Solution {
     public int solution(String[] board) {
-        char[][] g = new char[board.length][board[0].length()];
-        int[] s = new int[2];
-        for(int i = 0; i<g.length; i++){
-            for(int j = 0; j<g[0].length; j++){
-                g[i][j] = board[i].charAt(j);
-                if(g[i][j] == 'R'){
-                    s[0] = i;
-                    s[1] = j;
+        
+        //init: graph, start
+        char[][] graph = new char[board.length][board[0].length()];
+        int[] start = new int[2];
+        for(int i = 0; i<board.length; i++){
+            for(int j = 0; j<board[0].length(); j++){
+                graph[i][j] = board[i].charAt(j);
+                if(graph[i][j] == 'R'){
+                    start[0] = i;
+                    start[1] = j;
                 }
             }
         }
-        int[] dx = new int[]{0, 0, -1, 1};
+        
+        //bfs
         int[] dy = new int[]{-1, 1, 0, 0};
+        int[] dx = new int[]{0, 0, -1, 1};
+        
         Queue<int[]> q = new LinkedList<>();
-        boolean[][] v = new boolean[g.length][g[0].length];
-        q.add(new int[]{s[0], s[1], 0});
-        v[s[0]][s[1]] = true;
+        boolean[][] visited = new boolean[graph.length][graph[0].length];
+        
+        q.offer(new int[]{start[0], start[1], 0});
+        visited[start[0]][start[1]] = true;
         
         while(!q.isEmpty()){
-            int[] c = q.poll();
+            int[] curr = q.poll();            
             for(int i = 0; i<4; i++){
-                int y = c[0];
-                int x = c[1];
+                int y = curr[0], x = curr[1];
                 while(true){
                     int ny = y + dy[i];
                     int nx = x + dx[i];
-                    
-                    if(!(ny > -1 && ny < g.length && nx > -1 && nx < g[0].length) || g[ny][nx] == 'D'){
-                        break;
-                    }
-                    
+                    if(validate(ny, nx, graph)) break;
                     y = ny;
                     x = nx;
                 }
-                if(g[y][x] == 'G'){
-                    return c[2] + 1;
+                if(graph[y][x] == 'G'){
+                    return curr[2] + 1;
                 }
-                if(!v[y][x]){
-                    v[y][x] = true;
-                    q.add(new int[]{y, x, c[2] + 1});
+                if(!visited[y][x]){
+                    q.offer(new int[]{y, x, curr[2] + 1});
+                    visited[y][x] = true;
                 }
             }
         }
         return -1;
+    }
+    
+    private boolean validate(int ny, int nx, char[][] graph){
+        return !(ny > -1 && ny < graph.length && nx > -1 && nx < graph[0].length) || graph[ny][nx] == 'D';
     }
 }
