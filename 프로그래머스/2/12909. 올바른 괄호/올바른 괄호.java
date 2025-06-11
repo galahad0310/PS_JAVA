@@ -7,6 +7,8 @@ class Solution {
                 if(!d.isEmpty()){
                     if(d.getLast() == '('){
                         d.removeLast();                        
+                    }else{
+                        d.addLast(c);
                     }
                 }else{
                     return false;
