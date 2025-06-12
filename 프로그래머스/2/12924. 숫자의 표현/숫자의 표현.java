@@ -1,24 +1,21 @@
 class Solution {
     public int solution(int n) {
-        int[] s = new int[n+1];
+        int i = 1, j = 1, sum = 1, answer = 0;
         
-        for(int i = 1; i<n+1; i++){
-            s[i] = s[i-1] + i;
-        }
-        
-        int i = 0, j = 1, answer = 0;
-        
-        while(i<j){
-            int sum = s[j] - s[i];
+        while(i<=j){
             if(sum < n){
-                j++;        
+                j++;
+                sum+=j;
             }else if(sum > n){
+                sum-=i;
                 i++;
             }else{
                 answer++;
+                sum-=i;
                 i++;
             }
         }
+        
         return answer;
     }
 }
