@@ -18,12 +18,7 @@ class Solution {
             boolean isPossible = true;
             
             for(String key : wantMap.keySet()){
-                if(map.containsKey(key)){
-                    if(map.get(key) < wantMap.get(key)){
-                        isPossible = false;
-                        break;
-                    }
-                }else{
+                if(wantMap.get(key) != map.get(key)){
                     isPossible = false;
                     break;
                 }
