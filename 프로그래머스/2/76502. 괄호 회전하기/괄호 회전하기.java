@@ -1,36 +1,53 @@
 import java.util.*;
 class Solution {
     public int solution(String s) {
-        int answer = 0;
-        if(s.length() % 2 == 1) return answer;
+        int cnt = 0;
+        char[] arr = s.toCharArray();
         
-        StringBuilder sb = new StringBuilder(s);
         for(int i = 0; i<s.length(); i++){
-            if(isCorrect(sb.toString())) answer++;
-            sb.append(sb.charAt(0));
-            sb.deleteCharAt(0);
-        }
-        return answer;
-    }
-    
-    boolean isCorrect(String s){
-        Deque<Character> stack = new ArrayDeque<>();
-        for(char c : s.toCharArray()){
-            if(stack.isEmpty() || c == '(' || c == '[' || c =='{'){
-                stack.addFirst(c);
-                continue;
+            
+            if(i > 0){
+                char first = arr[0];
+                for(int j = 0; j<arr.length - 1; j++){
+                    arr[j] = arr[j+1];
+                }
+                arr[arr.length - 1] = first;
             }
             
-            if(check(stack.peekFirst(), c)){
-                stack.removeFirst();
+            
+
+            Deque<Character> stack = new ArrayDeque<>();
+            for(int j = 0; j<arr.length; j++){
+                if(stack.isEmpty()){
+                    stack.addLast(arr[j]);
+                }else{
+                    if(arr[j] == ']'){
+                        if(stack.peekLast() == '['){
+                            stack.removeLast();
+                        }else{
+                            break;
+                        }
+                    }else if(arr[j] == ')'){
+                        if(stack.peekLast() == '('){
+                            stack.removeLast();
+                        }else{
+                            break;
+                        }
+                    }else if(arr[j] == '}'){
+                        if(stack.peekLast() == '{'){
+                            stack.removeLast();
+                        }else{
+                            break;
+                        }
+                    }else{
+                        stack.addLast(arr[j]);
+                    }
+                }
+            }
+            if(stack.isEmpty()){
+               cnt++; 
             }
         }
-        
-        return stack.isEmpty();
+        return cnt;
     }
-    
-    boolean check(char left, char right){
-       return (left == '(' && right == ')') || (left == '[' && right ==']') || (left == '{' && right =='}');
-    }
-    
 }
