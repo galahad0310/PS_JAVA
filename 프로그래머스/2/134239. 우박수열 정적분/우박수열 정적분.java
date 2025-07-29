@@ -1,41 +1,43 @@
 import java.util.*;
 class Solution {
     public double[] solution(int k, int[][] ranges) {
-        List<Integer> list = new ArrayList<>();
-        list.add(k);
-        while(k!=1){
+        // 1. 구간합 배열을 만들기
+        //  1-1. y값의 변화를 담은 리스트 생성
+        //  1-2. 1-1에서 만든 리스트로 구간별 넓이를 담은 리스트 생성
+        //  1-3. 1-2에서 만든 리스트로 구간합 배열 생성
+        // 2. 구간별 정적분값 O(1) 속도로 산출 후 배열에 저장
+        
+        List<Double> deltaY = new ArrayList<>();
+        deltaY.add(Double.valueOf(k));
+        while(k != 1){
             if(k%2 == 0){
                 k/=2;
             }else{
                 k*=3;
                 k++;
             }
-            list.add(k);
+            deltaY.add(1.0*k);
         }
         
-        double[] arr = new double[list.size() - 1];
-        for(int i = 0; i<list.size() - 1; i++){
-            arr[i] = 1.0 * (list.get(i + 1) + list.get(i)) / 2;
+        List<Double> fragments = new ArrayList<>();
+        for(int i = 1; i<deltaY.size(); i++){
+            fragments.add((deltaY.get(i) + deltaY.get(i-1)) / 2.0);
         }
         
-        double[] sum = new double[arr.length+1];
-        for(int i = 1; i<sum.length; i++){
-            sum[i] = sum[i - 1] + arr[i - 1];
+        double[] prefixSum = new double[fragments.size() + 1];
+        for(int i = 1; i<prefixSum.length; i++){
+            prefixSum[i] = prefixSum[i - 1] + fragments.get(i - 1);
         }
         
-        int n = sum.length - 1;
         double[] result = new double[ranges.length];
-        
-        int idx = 0;
+        int n = deltaY.size() - 1, idx = 0;
         for(int[] range : ranges){
-            int a = range[0], b = range[1];
-            if(b <= 0) b = n+b;
-            if(a > b){
-                result[idx++] = -1.0;
-            }else{
-                result[idx++] = sum[b] - sum[a];
-            }
+            int s = range[0], e = range[1];
+            if(e <= 0) e += n;
+            if(s > e) result[idx++] = -1.0;
+            else result[idx++] = prefixSum[e] - prefixSum[s];
         }
+        
         return result;
     }
 }
