@@ -1,38 +1,40 @@
 import java.util.*;
 class Solution {
     public int[] solution(int[][] users, int[] emoticons) {
-        List<List<Integer>> list = permute(4, emoticons.length);
-        int[][] notes = new int[list.size()][2];
+        // 할인율 마다 결과값(가입 횟수, 비용)을 도출, 결과값 정렬
+        // 1. 할인율은 중복 순열 알고리즘으로 모든 경우의 수 도출
+        // 2. 경우의 수 마다 계산 후, 배열에 저장
+        // 3. 배열 정렬후 리턴
         
-        for(int i = 0; i<notes.length; i++){
-            List<Integer> ratios = list.get(i);
+        List<List<Integer>> cases = permute(4, emoticons.length);
+        int[][] results = new int[cases.size()][2];
+        int idx = 0;
+        for(List<Integer> c : cases){
             for(int[] user : users){
-                int want_ratio = user[0];
-                int limit_price = user[1];
-                double total = 0;
-                for(int j = 0; j<ratios.size(); j++){
-                    if(ratios.get(j) >= want_ratio){
-                        total += ((1.0 * 100 - ratios.get(j)) / 100) * emoticons[j];
+                int r1, r2 = 0;
+                for(int i = 0; i<c.size(); i++){
+                    if(c.get(i) >= user[0]){
+                        r2 += 1.0 * emoticons[i] * (1.0 * 100 - c.get(i))/100;
                     }
-                    if(total >= limit_price) break;
+                    if(r2 >= user[1]) break;
                 }
-                if(total >= limit_price){
-                    notes[i][0]++;
+                if(r2 >= user[1]){
+                    results[idx][0]++;
                 }else{
-                    notes[i][1] += total;
+                    results[idx][1] += r2;
                 }
             }
+            idx++;
         }
+        Arrays.sort(results, (o1, o2) -> o1[0] == o2[0] ? o2[1] - o1[1] : o2[0] - o1[0]);
         
-        Arrays.sort(notes, (o1, o2) -> o1[0] == o2[0] ? o2[1] - o1[1] : o2[0] - o1[0]);
-        
-        return notes[0];
+        return results[0];
     }
     
     List<List<Integer>> permute(int n, int r){
-        List<List<Integer>> result = new ArrayList<>();
-        permuteHelper(n, r, new ArrayList<>(), result);
-        return result;
+        List<List<Integer>> cases = new ArrayList<>();
+        permuteHelper(n, r, new ArrayList<>(), cases);
+        return cases;
     }
     
     void permuteHelper(int n, int r, List<Integer> buffer, List<List<Integer>> result){
@@ -40,6 +42,7 @@ class Solution {
             result.add(new ArrayList<>(buffer));
             return;
         }
+        
         for(int i = 1; i<=n; i++){
             buffer.add(i * 10);
             permuteHelper(n, r-1, buffer, result);
