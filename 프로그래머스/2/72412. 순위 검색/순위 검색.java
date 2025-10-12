@@ -8,7 +8,7 @@ class Solution {
             String[] arr = data.split(" ");
             int score = Integer.parseInt(arr[4]);
             arr = new String[]{arr[0], arr[1], arr[2], arr[3]};
-            dfs(arr, 0, score);
+            dfs(arr, "", 0, score);
         }
         
         //LowerBound를 위한 정렬
@@ -56,21 +56,12 @@ class Solution {
         return r!= -1 ? list.size() - r : 0;
     }
     
-    private void dfs(String[] arr, int depth, int score){
+    private void dfs(String[] arr, String key, int depth, int score){
         if(depth == 4){
-            map.computeIfAbsent(String.join("", arr), k -> new ArrayList<>()).add(score);
+            map.computeIfAbsent(key, k -> new ArrayList<>()).add(score);
             return;
         }
-        
-        // - 넣는 경우
-        String temp = arr[depth];
-        arr[depth] = "-";
-        dfs(arr, depth + 1, score);
-        
-        // 그대로 냅두는 경우
-        arr[depth] = temp;
-        dfs(arr, depth + 1, score);
+        dfs(arr, key + "-", depth + 1, score);
+        dfs(arr, key + arr[depth], depth + 1, score);
     }
-    
-    
 }
