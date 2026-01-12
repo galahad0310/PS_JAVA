@@ -6,17 +6,17 @@
 using namespace std;
 
 string solution(string s) {
-    string answer = "";
+    stringstream ss(s); //c++은 이렇게, 객체를 stack에 저장할 수 있다.
+    int next;
+    ss >> next;
     
-    stringstream ss(s);
-    int num;
-    vector<int> v; 
+    int min_val = next;
+    int max_val = next;
     
-    while(ss >> num){
-        v.push_back(num);
+    while(ss >> next){
+        min_val = min(min_val, next);
+        max_val = max(max_val, next);
     }
     
-    sort(v.begin(), v.end());
-    
-    return to_string(v.front()) + " " + to_string(v.back());
+    return to_string(min_val) + " " + to_string(max_val);
 }
