@@ -1,20 +1,25 @@
 import java.util.*;
+
 class Solution {
     boolean solution(String s) {
         Deque<Character> d = new ArrayDeque<>();
+        
         for(char c : s.toCharArray()){
-            if(c == ')'){
-                if(!d.isEmpty()){
-                    if(d.getLast() == '('){
-                        d.removeLast();                        
-                    }else{
-                        d.addLast(c);
-                    }
-                }else{
-                    return false;
-                }
+            if(d.isEmpty()){
+                if(c ==')') return false;
+                d.push(c);
+                continue;
+            }
+            
+            if(c == '('){
+                d.push(c);
+                continue;
+            }
+            
+            if(c == ')' && !d.isEmpty()){
+                d.pop();
             }else{
-                d.addLast(c);
+                return false;
             }
         }
         return d.isEmpty();
