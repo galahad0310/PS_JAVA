@@ -1,23 +1,24 @@
 class Solution {
     public String solution(String s) {
-        char[] arr = s.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        s = s.toLowerCase();
         
-        boolean flag = true;
-        for(int i = 0; i<arr.length; i++){
-            if(flag){
-                if(arr[i] != ' '){
-                    arr[i] = Character.toUpperCase(arr[i]);
-                    flag = false;
-                }    
+        boolean isFirst = true;
+        
+        for(char c : s.toCharArray()){
+            if(c == ' '){
+                isFirst = true;
+                sb.append(' ');
             }else{
-                if(arr[i] == ' '){
-                    flag = true;
-                }
-                if(Character.isUpperCase(arr[i])){
-                    arr[i] = Character.toLowerCase(arr[i]);
+                if(isFirst){
+                    sb.append(Character.toUpperCase(c));
+                    isFirst = false;
+                }else{
+                    sb.append(c);
                 }
             }
         }
-        return new String(arr);
+        
+        return sb.toString();
     }
 }
