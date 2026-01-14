@@ -1,18 +1,21 @@
 #include<string>
 #include <iostream>
+#include <stack>
 
 using namespace std;
 
 bool solution(string s){
-    int count = 0;
+    stack<char> st;
+    
     for(char c : s){
         if(c == '('){
-            count++;
+            st.push(c);
         }else{
-            if(count == 0) return false;
-            count--;
+            if(st.empty()) return false;
+            st.pop();
         }
     }
     
-    return count == 0;
+    return st.empty();
 }
+
