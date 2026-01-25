@@ -1,39 +1,37 @@
 #include <iostream>
 #include <unordered_map>
-#include <cctype>
 #include <string>
 
 using namespace std;
 
 int main() {
+
 	ios::sync_with_stdio(0);
-	cin.tie(0);
+	cin.tie(NULL);
 
 	int n, m;
 	cin >> n >> m;
 
-	unordered_map<int, string> map1;
-	unordered_map<string, int> map2;
+	unordered_map<string, int> map1;
+	unordered_map<int, string> map2;
+
+	string input;
 
 	for (int i = 1; i <= n; i++) {
-		string s;
-		cin >> s;
-		map1[i] = s;
-		map2[s] = i;
+		cin >> input;
+		map1[input] = i;
+		map2[i] = input;
 	}
 
+	string p;
 	for (int i = 0; i < m; i++) {
-		string s;
-		cin >> s;
-
-		if (isdigit(s[0])) {
-			int num = stoi(s);
-			cout << map1[num] << "\n";
+		cin >> p;
+		if (isdigit(p[0])) {
+			cout << map2[stoi(p)] << "\n";
 		}
 		else {
-			cout << map2[s] << "\n";
+			cout << map1[p] << "\n";
 		}
 	}
 
-	return 0;
 }
