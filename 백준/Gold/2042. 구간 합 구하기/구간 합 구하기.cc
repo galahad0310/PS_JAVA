@@ -1,78 +1,59 @@
 #include <iostream>
 #include <vector>
-#include <cmath>
 
 using namespace std;
 
-// arr: 입력 배열
-// tree: 세그먼트 트리 배열
-// node: 현재 노드 번호
-// start, end: 현재 노드가 담당하는 구간의 시작과 끝 인덱스
-long long init(vector<long long>& arr, vector<long long>& tree, int node, int start, int end) {
-    if (start == end) {
-        return tree[node] = arr[start];
-    }
-    int mid = (start + end) / 2;
-    return tree[node] = init(arr, tree, node * 2, start, mid) + init(arr, tree, node * 2 + 1, mid + 1, end);
+int N, M, K;
+vector<long long> tree;
+vector<long long> arr;
+
+long long init(vector<long long>& arr, vector<long long>& tree, int node, int left, int right) {
+	if (left == right) return tree[node] = arr[left];
+	int mid = (left + right) / 2;
+	return tree[node] = init(arr, tree, node * 2, left, mid) + init(arr, tree, node * 2 + 1, mid + 1, right);
 }
 
-// index: 변경할 숫자의 인덱스
-// diff: 변경된 값과 기존 값의 차이
-void update(vector<long long>& tree, int node, int start, int end, int index, long long diff) {
-    if (index < start || index > end) return; // 범위 밖이면 무시
-
-    tree[node] += diff; // 차이만큼 현재 노드 갱신
-
-    if (start != end) { // 리프 노드가 아니면 자식들도 갱신
-        int mid = (start + end) / 2;
-        update(tree, node * 2, start, mid, index, diff);
-        update(tree, node * 2 + 1, mid + 1, end, index, diff);
-    }
+long long query(vector<long long>& tree, int node, int left, int right, int start, int end) {
+	if (left > end || right < start) return 0;
+	if (start <= left && right <= end) return tree[node];
+	int mid = (left + right) / 2;
+	return query(tree, node * 2, left, mid, start, end) + query(tree, node * 2 + 1, mid + 1, right, start, end);
 }
 
-// left, right: 합을 구하고자 하는 구간
-long long sum(vector<long long>& tree, int node, int start, int end, int left, int right) {
-    if (left > end || right < start) return 0; // 겹치는 구간이 없으면 0 반환
-    if (left <= start && end <= right) return tree[node]; // 구간이 완전히 포함되면 현재 노드 값 반환
-
-    int mid = (start + end) / 2;
-    return sum(tree, node * 2, start, mid, left, right) + sum(tree, node * 2 + 1, mid + 1, end, left, right);
+void update(vector<long long>& tree, int node, int left, int right, int target, long long diff) {
+	if (left > target || right < target) return; //완전히 벗어난 경우
+	tree[node] += diff;  //겹치는 경우
+	if (left != right) {
+		int mid = (left + right) / 2;
+		update(tree, node * 2, left, mid, target, diff);
+		update(tree, node * 2 + 1, mid + 1, right, target, diff);
+	}
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+	cin >> N >> M >> K;
+	tree.assign(4 * N, 0);
+	arr.assign(N, 0);
 
-    int N, M, K;
-    cin >> N >> M >> K;
+	for (int i = 0; i < N; i++) {
+		cin >> arr[i];
+	}
 
-    vector<long long> arr(N);
-    for (int i = 0; i < N; i++) {
-        cin >> arr[i];
-    }
+	init(arr, tree, 1, 0, arr.size() - 1);
 
-    // 트리의 높이 계산 및 사이즈 할당
-    int tree_size = 4 * N;
-    vector<long long> tree(tree_size);
+	for (int i = 0; i < M + K; i++) {
+		long long a, b, c;
+		cin >> a >> b >> c;
 
-    // 트리 초기화
-    init(arr, tree, 1, 0, N - 1);
+		if (a == 1) {
+			long long temp = arr[b-1];
+			arr[b-1] = c;
+			update(tree, 1, 0, arr.size() - 1, b - 1, c - temp);
+		}
+		else if (a == 2) {
+			cout << query(tree, 1, 0, arr.size() - 1, b - 1, c - 1) << "\n";
+		}
+	}
 
-    for (int i = 0; i < M + K; i++) {
-        long long a, b, c;
-        cin >> a >> b >> c;
-
-        if (a == 1) { // 값 변경 (b번째 수를 c로 변경)
-            // 문제에서 인덱스는 1부터 시작하므로 0-based로 맞춤
-            int index = (int)b - 1;
-            long long diff = c - arr[index];
-            arr[index] = c; // 배열 값 갱신
-            update(tree, 1, 0, N - 1, index, diff); // 트리 갱신
-        }
-        else if (a == 2) { // 구간 합 (b번째부터 c번째까지 합)
-            cout << sum(tree, 1, 0, N - 1, (int)b - 1, (int)c - 1) << "\n";
-        }
-    }
-
-    return 0;
+	return 0;
 }
