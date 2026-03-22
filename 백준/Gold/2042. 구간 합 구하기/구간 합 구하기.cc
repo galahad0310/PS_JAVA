@@ -31,6 +31,9 @@ void update(vector<long long>& tree, int node, int left, int right, int target, 
 }
 
 int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(NULL);
+
 	cin >> N >> M >> K;
 	tree.assign(4 * N, 0);
 	arr.assign(N, 0);
